@@ -2,17 +2,21 @@ FROM golang:1.23.6-alpine AS builder
 
 RUN apk update && apk add --no-cache git
 WORKDIR /app
-COPY service1/ .
-COPY ../proto .
 
+COPY proto ./proto
+COPY service1 ./service1
+COPY ../.env ./service1/.env
+
+WORKDIR /app/service1
 RUN go mod download
-RUN go build -o main ./cmd/service1
+RUN go build -o ./bin/main ./cmd/service1/main.go
 
 FROM alpine:latest
 
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-COPY --from=builder /app/main .
-COPY ../.env .
+WORKDIR /app
 
-CMD ./main
+COPY --from=builder /app/service1/bin/main .
+COPY --from=builder /app/service1/.env .env
+
+EXPOSE 50051
+CMD ["./main"]

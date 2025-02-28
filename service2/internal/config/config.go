@@ -17,6 +17,12 @@ func LoadConfig() *Config {
 		log.Println("Warning: No .env file found, using system environment variables")
 	}
 
+	grpcHost := os.Getenv("GRPC_HOST")
+	if grpcHost == "" {
+		grpcHost = "localhost"
+		log.Println("Warning: GRPC_HOST environment variable not set, using default localhost")
+	}
+
 	grpcPort := os.Getenv("GRPC_PORT")
 	if grpcPort == "" {
 		grpcPort = "50051"
@@ -30,6 +36,7 @@ func LoadConfig() *Config {
 	}
 
 	return &Config{
+		GRPCHost: grpcHost,
 		GRPCPort: grpcPort,
 		HTTPPort: httpPort,
 	}

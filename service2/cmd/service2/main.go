@@ -14,6 +14,8 @@ func main() {
 
 	grpcAddress := fmt.Sprintf("%s:%s", cfg.GRPCHost, cfg.GRPCPort)
 
+	log.Printf("grpc address: %s", grpcAddress)
+
 	grpcClient, err := client.NewGRPCClient(grpcAddress)
 	if err != nil {
 		log.Fatalf("Failed to connect to gRPC server: %v", err)

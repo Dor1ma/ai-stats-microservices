@@ -20,6 +20,8 @@ services:
       retries: 5
       start_period: 30s
       timeout: 5s
+    networks:
+      - app-network
 
   service1:
     build:
@@ -28,15 +30,26 @@ services:
     env_file:
       - .env
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    ports:
+      - ${GRPC_PORT}:50051
+    networks:
+      - app-network
 
   service2:
     build:
       context: .
-      dockerfile: Dockerfile.service2
+      dockerfile: ./service2/Dockerfile
     env_file:
       - .env
     ports:
       - ${HTTP_PORT}:8080
     depends_on:
       - service1
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

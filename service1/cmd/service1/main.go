@@ -26,7 +26,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 	proto.RegisterStatsServiceServer(grpcServer, statsHandler)
 
-	address := ":" + cfg.GRPCPort
+	address := "0.0.0.0:" + cfg.GRPCPort
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
