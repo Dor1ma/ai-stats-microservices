@@ -29,7 +29,7 @@ func main() {
 	http.HandleFunc("/calls", handlers.GetCalls)
 	http.HandleFunc("/service", handlers.CreateService)
 
-	logger.Log.Info(fmt.Sprintf("HTTP server is running on :%s\n", cfg.HTTPPort))
+	logger.Log.Info(fmt.Sprintf("HTTP server is running on :%s", cfg.HTTPPort))
 	if err := http.ListenAndServe(":"+cfg.HTTPPort, nil); err != nil {
 		logger.Log.Fatal(fmt.Sprintf("Failed to start HTTP server: %v", err))
 	}
