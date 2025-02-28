@@ -11,8 +11,8 @@ import (
 
 const (
 	createServiceQuery = `
-		INSERT INTO services (name, description)
-		VALUES ($1, $2)
+		INSERT INTO services (name, description, price)
+		VALUES ($1, $2, $3)
 		RETURNING id
 	`
 
@@ -24,7 +24,7 @@ const (
 	`
 
 	getStatsQuery = `
-		SELECT s.user_id, s.service_id, s.count, sv.name
+		SELECT s.user_id, s.service_id, s.count, sv.name, sv.price
 		FROM stats s
 		JOIN services sv ON s.service_id = sv.id
 		WHERE ($1 = 0 OR s.user_id = $1)
@@ -58,9 +58,9 @@ func (d *PostgresRepository) GetConnection() *sql.DB {
 	return d.conn
 }
 
-func (d *PostgresRepository) CreateService(ctx context.Context, name, description string) (int64, error) {
+func (d *PostgresRepository) CreateService(ctx context.Context, name, description string, price int64) (int64, error) {
 	var id int64
-	err := d.conn.QueryRowContext(ctx, createServiceQuery, name, description).Scan(&id)
+	err := d.conn.QueryRowContext(ctx, createServiceQuery, name, description, price).Scan(&id)
 	return id, err
 }
 
@@ -85,7 +85,7 @@ func (d *PostgresRepository) GetStats(ctx context.Context, userID, serviceID int
 	var stats []models.Stat
 	for rows.Next() {
 		var stat models.Stat
-		if err := rows.Scan(&stat.UserID, &stat.ServiceID, &stat.Count, &stat.ServiceName); err != nil {
+		if err := rows.Scan(&stat.UserID, &stat.ServiceID, &stat.Count, &stat.ServiceName, &stat.Price); err != nil {
 			return nil, err
 		}
 		stats = append(stats, stat)

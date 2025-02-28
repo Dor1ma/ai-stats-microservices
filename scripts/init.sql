@@ -1,7 +1,8 @@
 CREATE TABLE services (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
-    description TEXT
+    description TEXT,
+    price BIGINT NOT NULL
 );
 
 CREATE TABLE users (
@@ -18,9 +19,9 @@ CREATE TABLE stats (
     FOREIGN KEY (service_id) REFERENCES services(id)
 );
 
-INSERT INTO services (name, description) VALUES
-    ('Service A', 'Description for Service A'),
-    ('Service B', 'Description for Service B');
+INSERT INTO services (name, description, price) VALUES
+    ('Service A', 'Description for Service A', 100),
+    ('Service B', 'Description for Service B', 200);
 
 INSERT INTO users (name) VALUES
     ('User 1'),
