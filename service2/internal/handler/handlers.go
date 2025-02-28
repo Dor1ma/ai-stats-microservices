@@ -12,10 +12,10 @@ import (
 )
 
 type Handlers struct {
-	grpcClient *client.GRPCClient
+	grpcClient client.GRPCClient
 }
 
-func NewHandlers(grpcClient *client.GRPCClient) *Handlers {
+func NewHandlers(grpcClient client.GRPCClient) *Handlers {
 	return &Handlers{grpcClient: grpcClient}
 }
 
