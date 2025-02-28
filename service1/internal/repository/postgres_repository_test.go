@@ -19,11 +19,11 @@ func TestPostgresRepository_CreateService(t *testing.T) {
 	repo := &PostgresRepository{conn: db}
 
 	t.Run("success", func(t *testing.T) {
-		mock.ExpectQuery(`^INSERT INTO services \(name, description\) VALUES \(\$1, \$2\) RETURNING id$`).
-			WithArgs("test-service", "test description").
+		mock.ExpectQuery(`^INSERT INTO services \(name, description, price\) VALUES \(\$1, \$2, \$3\) RETURNING id$`).
+			WithArgs("test-service", "test description", 100).
 			WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 
-		id, err := repo.CreateService(context.Background(), "test-service", "test description")
+		id, err := repo.CreateService(context.Background(), "test-service", "test description", 100)
 
 		assert.NoError(t, err)
 		assert.Equal(t, int64(1), id)
@@ -31,11 +31,11 @@ func TestPostgresRepository_CreateService(t *testing.T) {
 
 	t.Run("error", func(t *testing.T) {
 		expectedErr := fmt.Errorf("database error")
-		mock.ExpectQuery(`^INSERT INTO services \(name, description\) VALUES \(\$1, \$2\) RETURNING id$`).
-			WithArgs("fail-service", "").
+		mock.ExpectQuery(`^INSERT INTO services \(name, description, price\) VALUES \(\$1, \$2, \$3\) RETURNING id$`).
+			WithArgs("fail-service", "", 100).
 			WillReturnError(expectedErr)
 
-		id, err := repo.CreateService(context.Background(), "fail-service", "")
+		id, err := repo.CreateService(context.Background(), "fail-service", "", 100)
 
 		assert.ErrorIs(t, err, expectedErr)
 		assert.Equal(t, int64(0), id)

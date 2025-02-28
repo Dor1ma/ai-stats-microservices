@@ -35,8 +35,8 @@ func (m *MockRepository) GetStats(ctx context.Context, userID, serviceID int64, 
 	return args.Get(0).([]models.Stat), args.Error(1)
 }
 
-func (m *MockRepository) CreateService(ctx context.Context, name, description string) (int64, error) {
-	args := m.Called(ctx, name, description)
+func (m *MockRepository) CreateService(ctx context.Context, name, description string, price int64) (int64, error) {
+	args := m.Called(ctx, name, description, price)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -94,11 +94,12 @@ func (suite *StatsServiceTestSuite) TestCreateService() {
 	ctx := context.Background()
 	name := "TestService"
 	description := "TestDescription"
+	price := int64(100)
 	serviceID := int64(1)
 
-	suite.repo.On("CreateService", ctx, name, description).Return(serviceID, nil)
+	suite.repo.On("CreateService", ctx, name, description, price).Return(serviceID, nil)
 
-	id, err := suite.service.CreateService(ctx, name, description)
+	id, err := suite.service.CreateService(ctx, name, description, price)
 
 	assert.NoError(suite.T(), err)
 	assert.Equal(suite.T(), serviceID, id)

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"github.com/Dor1ma/ai-stats-microservices/service1/internal/logger"
 	"testing"
 
 	proto "github.com/Dor1ma/ai-stats-microservices/proto/gen"
@@ -24,12 +25,15 @@ func (m *MockStatsService) GetStats(ctx context.Context, userID, serviceID int64
 	return args.Get(0).([]*proto.Stat), args.Get(1).(int64), args.Error(2)
 }
 
-func (m *MockStatsService) CreateService(ctx context.Context, name, description string) (int64, error) {
-	args := m.Called(ctx, name, description)
+func (m *MockStatsService) CreateService(ctx context.Context, name, description string, price int64) (int64, error) {
+	args := m.Called(ctx, name, description, price)
 	return args.Get(0).(int64), args.Error(1)
 }
 
 func TestAddCall(t *testing.T) {
+	logger.InitLogger()
+	defer logger.Log.Sync()
+
 	mockService := new(MockStatsService)
 	handler := NewStatsHandler(mockService)
 
@@ -49,6 +53,9 @@ func TestAddCall(t *testing.T) {
 }
 
 func TestGetStats(t *testing.T) {
+	logger.InitLogger()
+	defer logger.Log.Sync()
+
 	mockService := new(MockStatsService)
 	handler := NewStatsHandler(mockService)
 
@@ -80,6 +87,9 @@ func TestGetStats(t *testing.T) {
 }
 
 func TestCreateService(t *testing.T) {
+	logger.InitLogger()
+	defer logger.Log.Sync()
+
 	mockService := new(MockStatsService)
 	handler := NewStatsHandler(mockService)
 
@@ -87,10 +97,11 @@ func TestCreateService(t *testing.T) {
 	req := &proto.ServiceRequest{
 		Name:        "TestService",
 		Description: "TestDescription",
+		Price:       100,
 	}
 
 	var serviceID int64 = 1
-	mockService.On("CreateService", ctx, req.Name, req.Description).Return(serviceID, nil)
+	mockService.On("CreateService", ctx, req.Name, req.Description, req.Price).Return(serviceID, nil)
 
 	resp, err := handler.CreateService(ctx, req)
 
