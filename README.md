@@ -20,7 +20,7 @@
     ```bash
     docker-compose up -d --build
     ```
-4. Запросы можно будет слать по ```http://localhost:8080```
+4. Запросы можно будет слать на ```http://localhost:8080```
 
 ## Примеры запросов
 
@@ -35,14 +35,14 @@
 ```
 
 Адрес:
-```http request
+```
 http://localhost:8080/call
 ```
 
 ### GET /calls
 
 Адрес:
-```http request
+```
 http://localhost:8080/calls?user_id=1&service_id=1&page=1&limit=10
 ```
 
@@ -58,6 +58,6 @@ http://localhost:8080/calls?user_id=1&service_id=1&page=1&limit=10
 ```
 
 Адрес:
-```http request
+```
 http://localhost:8080/service
 ```
